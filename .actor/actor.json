@@ -12,7 +12,7 @@
             "DEVELOPER_TOOLS"
         ]
     },
-    "dockerfile": "./Dockerfile",
-    "input": "./.actor/input_schema.json",
-    "readme": "./README.md"
+    "dockerfile": "../Dockerfile",
+    "input": "./input_schema.json",
+    "readme": "../README.md"
 }
