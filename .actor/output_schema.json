@@ -4,6 +4,7 @@
     "description": "Validated phone records with E.164 standardization, carrier detection, WhatsApp and Telegram availability, timezones, and lead scores.",
     "properties": {
         "dataset": {
+            "type": "string",
             "title": "Validated Leads Dataset",
             "description": "Enriched records with E.164 phone numbers, messaging availability, and lead quality scores.",
             "template": "{{links.apiDefaultDatasetUrl}}/items"
