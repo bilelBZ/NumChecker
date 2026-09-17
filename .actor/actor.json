@@ -1,0 +1,18 @@
+{
+    "actorSpecification": 1,
+    "name": "crm-phone-messaging-validator",
+    "title": "CRM Phone & Messaging Validator (WhatsApp & Telegram)",
+    "description": "High-performance phone number validation, E.164 standardization with Google libphonenumber, carrier detection, and WhatsApp & Telegram registration verification.",
+    "version": "1.0.0",
+    "meta": {
+        "templateId": "python-empty",
+        "categories": [
+            "LEAD_GENERATION",
+            "MARKETING",
+            "DEVELOPER_TOOLS"
+        ]
+    },
+    "dockerfile": "./Dockerfile",
+    "input": "./.actor/input_schema.json",
+    "readme": "./README.md"
+}

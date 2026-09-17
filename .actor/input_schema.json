@@ -1,0 +1,97 @@
+{
+    "title": "CRM Phone & Messaging Validator Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "phoneNumbers": {
+            "title": "Phone Numbers",
+            "type": "array",
+            "description": "List of phone numbers to sanitize and check. Can be in international, national, or raw format.",
+            "editor": "stringList",
+            "prefill": [
+                "+33612345678",
+                "+14155552671",
+                "+447911123456",
+                "0612345678"
+            ]
+        },
+        "csvContent": {
+            "title": "Raw CSV / Multi-line Input",
+            "type": "string",
+            "description": "Optional raw CSV or newline-delimited text containing phone numbers. If provided, numbers are merged with phoneNumbers array.",
+            "editor": "textarea"
+        },
+        "platforms": {
+            "title": "Validation Platforms",
+            "type": "array",
+            "description": "Select messaging platforms to query for account registration.",
+            "editor": "select",
+            "items": {
+                "type": "string",
+                "enum": ["whatsapp", "telegram"]
+            },
+            "default": ["whatsapp", "telegram"]
+        },
+        "defaultCountry": {
+            "title": "Default Country Code (ISO 3166-1 alpha-2)",
+            "type": "string",
+            "description": "Two-letter country code used as fallback for parsing national numbers missing an international prefix (+).",
+            "default": "FR",
+            "editor": "textfield"
+        },
+        "concurrencyLimit": {
+            "title": "Concurrency Limit",
+            "type": "integer",
+            "description": "Maximum number of phone validations executed concurrently.",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 5
+        },
+        "proxyConfiguration": {
+            "title": "Proxy Configuration",
+            "type": "object",
+            "description": "Apify Proxy or custom proxies used for network queries and platform lookups.",
+            "editor": "proxy"
+        },
+        "whatsappApiToken": {
+            "title": "WhatsApp Cloud API Access Token",
+            "type": "string",
+            "description": "Meta Graph API / WhatsApp Cloud API access token for contact lookups. Can also be set via WHATSAPP_API_TOKEN environment variable.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "whatsappPhoneNumberId": {
+            "title": "WhatsApp Business Phone Number ID",
+            "type": "string",
+            "description": "Meta Phone Number ID associated with your WhatsApp Business Account. Can also be set via WHATSAPP_PHONE_NUMBER_ID env var.",
+            "editor": "textfield"
+        },
+        "telegramApiId": {
+            "title": "Telegram API ID",
+            "type": "integer",
+            "description": "Telegram App API ID obtained from my.telegram.org. Can also be set via TELEGRAM_API_ID env var.",
+            "editor": "number"
+        },
+        "telegramApiHash": {
+            "title": "Telegram API Hash",
+            "type": "string",
+            "description": "Telegram App API Hash obtained from my.telegram.org. Can also be set via TELEGRAM_API_HASH env var.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "telegramSessionString": {
+            "title": "Telegram StringSession",
+            "type": "string",
+            "description": "Pre-authenticated Telethon StringSession. Can also be set via TELEGRAM_SESSION_STRING env var.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "simulationMode": {
+            "title": "Simulation / Dry Run Mode",
+            "type": "boolean",
+            "description": "If enabled (or when live credentials are not provided), simulates messaging platform responses for pipeline testing.",
+            "default": false
+        }
+    },
+    "required": ["platforms", "concurrencyLimit"]
+}

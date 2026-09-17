@@ -1,0 +1,10 @@
+{
+  "phoneNumbers": [
+    "+33612345678"
+  ],
+  "csvContent": "First Name,Company,Email,phone,Status\nSarah,FinTech Corp,sarah@fintech.io,+14155552671,New Lead\nMarc,SaaS Lab,marc@saas.com,+447911123456,Qualified",
+  "platforms": ["whatsapp", "telegram"],
+  "defaultCountry": "FR",
+  "concurrencyLimit": 5,
+  "simulationMode": true
+}
