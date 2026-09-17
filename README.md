@@ -1,121 +1,149 @@
 # CRM Phone & Messaging Validator (WhatsApp & Telegram)
 
-High-performance CRM data hygiene and lead enrichment Actor. Standardize phone numbers to international E.164 format, detect carriers and VoIP lines, calculate 0–100 lead reachability scores, resolve local timezones, and check registered messaging accounts on **WhatsApp** and **Telegram**—**while preserving all original CRM CSV columns**.
+**CRM Phone & Messaging Validator** is a bulk phone and messaging availability checker: feed it a list of phone numbers or an Apollo/HubSpot CSV and get back standardized formatting, carrier details, and registered availability for WhatsApp and Telegram. Download the results as JSON, CSV, Excel, HTML, or XML.
+
+Use it to check if a number is on WhatsApp or Telegram, clean CRM phone lists, detect timezones, and verify leads before a sales campaign. It runs in the cloud and needs no coding.
+
+**Full CRM CSV Passthrough:** Upload your Apollo, HubSpot, or Salesforce CSV export. The Actor keeps all your original columns (`First Name`, `Company`, `Email`, `Custom Tags`, etc.) and appends the validation results directly to each row.
 
 ---
 
-## 🎯 Why Use This Actor?
+## What does it do?
 
-- **Zero Manual VLOOKUPs:** Unlike basic validators that only return phone numbers, this Actor keeps all your original CRM fields (`First Name`, `Company`, `Email`, `Deal Stage`, `Apollo ID`) and appends the enriched data directly to each row.
-- **Cut Bounced Outreach by 40%+:** Filter out landlines, toll-free numbers, VoIP virtual lines, and malformed strings before launching cold outreach campaigns.
-- **Prioritize Hot Leads Instantly:** Use the composite **0–100 Lead Quality Score** to immediately identify prospects who are active across both WhatsApp and Telegram.
-- **Contact Leads at the Right Time:** Automatic timezone resolution and `isBusinessHours` flags ensure you never message prospects outside working hours.
+For each phone number or CSV lead, the Actor:
+- **Standardizes format first** — parses numbers to international E.164 format and identifies carrier brand and line type (`Mobile`, `Fixed Line`, `VoIP`, `Toll Free`), so every charge goes to a real check.
+- **Checks WhatsApp registration** — confirms whether the number is a registered WhatsApp account and identifies Business vs. Regular profiles.
+- **Checks Telegram registration** — confirms whether the number is registered on Telegram, extracts public `@username`, and checks Telegram Premium status.
+- **Detects Timezone & Business Hours** — resolves the local IANA timezone and calculates whether it is safe to contact right now (Monday–Friday, 9:00 AM – 6:00 PM local time).
+- **Calculates Lead Quality Score** — gives an instant 0–100 reachability score and recommends the best outreach channel (`WhatsApp`, `Telegram`, `SMS / Phone`, or `Email Only`).
 
 ---
 
-## 🚀 Key Features
+## What data does it return?
 
-| Feature | Description |
+Each result is one row per phone number (or one row per CSV record):
+
+| Data | Details |
 | :--- | :--- |
-| **🔄 Full CRM Passthrough** | Preserves all incoming CSV columns from Apollo, HubSpot, or Salesforce and appends enriched validation fields to the exact same records. |
-| **📊 0–100 Lead Quality Score** | Instant score evaluating deliverability, carrier type, and messaging presence, plus a `recommendedChannel` recommendation (`WhatsApp`, `Telegram`, `SMS / Phone`, or `Email Only`). |
-| **🕒 Timezone & Safe Hours** | Resolves the lead's local IANA timezone (`America/New_York`), displays local current time, and flags `isBusinessHours: true/false` (Mon–Fri 9:00 AM – 6:00 PM local time). |
-| **📱 Carrier & Line Detection** | Identifies mobile carriers (e.g., Orange, Verizon, Vodafone) and detects line types (`Mobile`, `Fixed Line`, `VoIP`, `Toll Free`). |
-| **💬 WhatsApp Verification** | Checks registered accounts and identifies whether the profile is a **Business** or **Regular** account. |
-| **✈️ Telegram & Premium Detection** | Verifies Telegram account presence, public `@username`, and whether the user is a **Telegram Premium** subscriber. |
+| **🏢 CRM Columns** | All your original columns from your uploaded CSV (First Name, Company, Email, etc.) preserved intact |
+| **📱 Number (E.164)** | The standardized phone number with country prefix (e.g., `+14155552671`) |
+| **🏷️ Carrier & Type** | Network carrier name (e.g., Orange, Verizon) and line classification (`Mobile`, `Fixed Line`, `VoIP`) |
+| **💬 WhatsApp** | Registration status (`true` / `false`) and account type (`business` / `regular`) |
+| **✈️ Telegram** | Registration status (`true` / `false`), public `@username`, and Telegram Premium badge |
+| **🕒 Timezone & Local Time** | Lead's local IANA timezone (e.g., `America/Los_Angeles`) and current local time |
+| **☀️ Business Hours** | Whether the lead is currently within business hours (`true` / `false`) |
+| **📊 Lead Quality Score** | 0–100 composite deliverability score and recommended outreach channel |
+| **🕒 Verified At** | UTC timestamp of when the check was performed |
+
+Every number that could be processed gets its own row with full intelligence. If a number is malformed or invalid, it is flagged with `validFormat: false`, `leadQualityScore: 0`, and a clear error explanation so you can purge dead leads immediately.
 
 ---
 
-## 📖 How It Works in 3 Simple Steps
+## Input
 
-1. **Upload or Paste Your Leads:** Provide a list of phone numbers or paste a raw CSV export from your CRM (Apollo, HubSpot, Salesforce).
-2. **Choose Platforms & Settings:** Select WhatsApp, Telegram, or both. Choose your fallback default country for national numbers without international prefixes.
-3. **Download Enriched CRM File:** Export your dataset as CSV, JSON, or Excel, and import it straight back into your CRM.
+Provide an array of phone numbers, or paste raw CSV text with lead details:
 
----
-
-## 📋 Sample Output Dataset
-
-When processing a CRM lead list, all original columns are preserved alongside the enriched intelligence:
-
+### Option A: Simple Phone List
 ```json
 {
-  "First Name": "Sarah",
-  "Company": "FinTech Corp",
-  "Email": "sarah@fintech.io",
-  "Status": "New Lead",
-  "input": "+14155552671",
-  "e164": "+14155552671",
-  "country": "US",
-  "validFormat": true,
-  "carrier": "T-Mobile",
-  "leadQualityScore": 95,
-  "recommendedChannel": "WhatsApp",
-  "riskLevel": "Low",
-  "timezone": "America/Los_Angeles",
-  "localTime": "09:15 AM",
-  "isBusinessHours": true,
-  "whatsapp": {
-    "isRegistered": true,
-    "accountType": "business"
-  },
-  "telegram": {
-    "isRegistered": true,
-    "hasUsername": true,
-    "isPremium": true
-  },
-  "verifiedAt": "2026-09-17T16:07:11Z"
+  "phoneNumbers": [
+    "+14155552671",
+    "+33612345678",
+    "+447911123456"
+  ],
+  "platforms": ["whatsapp", "telegram"],
+  "defaultCountry": "US"
 }
 ```
 
-If an input number is invalid:
+### Option B: CRM CSV Passthrough (Apollo / HubSpot)
 ```json
 {
-  "First Name": "John",
-  "Company": "Unknown",
-  "input": "12345",
-  "validFormat": false,
-  "leadQualityScore": 0,
-  "recommendedChannel": "None",
-  "riskLevel": "Invalid Number",
-  "verifiedAt": "2026-09-17T16:07:11Z",
-  "error": "Parsing error: The string supplied did not seem to be a phone number."
+  "csvContent": "First Name,Company,Email,phone\nSarah,FinTech Corp,sarah@fintech.io,+14155552671\nMarc,SaaS Lab,marc@saas.com,+33612345678",
+  "platforms": ["whatsapp", "telegram"]
 }
 ```
 
 ---
 
-## ⚙️ Input Parameters
+## Output
 
-| Parameter | Type | Required | Description |
-| :--- | :--- | :---: | :--- |
-| `csvContent` | `string` | Optional | Raw CSV text or export from Apollo, HubSpot, or Salesforce. All columns are preserved in output. |
-| `phoneNumbers` | `array` | Optional | List of phone numbers to validate (international or national formats). |
-| `platforms` | `array` | Yes | Messaging platforms to query: `["whatsapp", "telegram"]`. |
-| `defaultCountry` | `string` | No (default: `"FR"`) | Fallback two-letter ISO country code (e.g., `US`, `FR`, `GB`) for numbers missing a `+` prefix. |
-| `concurrencyLimit` | `integer` | No (default: `5`) | Maximum concurrent validation workers. |
-| `proxyConfiguration` | `object` | Optional | Apify Proxy settings (Residential or Datacenter). |
-| `simulationMode` | `boolean` | No (default: `false`) | Test run mode to simulate verification responses without making external network calls. |
+```json
+[
+  {
+    "First Name": "Sarah",
+    "Company": "FinTech Corp",
+    "Email": "sarah@fintech.io",
+    "input": "+14155552671",
+    "e164": "+14155552671",
+    "country": "US",
+    "validFormat": true,
+    "carrier": "T-Mobile",
+    "leadQualityScore": 95,
+    "recommendedChannel": "WhatsApp",
+    "riskLevel": "Low",
+    "timezone": "America/Los_Angeles",
+    "localTime": "09:15 AM",
+    "isBusinessHours": true,
+    "whatsapp": {
+      "isRegistered": true,
+      "accountType": "business"
+    },
+    "telegram": {
+      "isRegistered": true,
+      "hasUsername": true,
+      "isPremium": true
+    },
+    "verifiedAt": "2026-09-17T16:07:11Z"
+  },
+  {
+    "First Name": "Marc",
+    "Company": "SaaS Lab",
+    "Email": "marc@saas.com",
+    "input": "+33612345678",
+    "e164": "+33612345678",
+    "country": "FR",
+    "validFormat": true,
+    "carrier": "Orange",
+    "leadQualityScore": 75,
+    "recommendedChannel": "WhatsApp",
+    "riskLevel": "Low",
+    "timezone": "Europe/Paris",
+    "localTime": "06:15 PM",
+    "isBusinessHours": false,
+    "whatsapp": {
+      "isRegistered": true,
+      "accountType": "regular"
+    },
+    "telegram": {
+      "isRegistered": false,
+      "hasUsername": false,
+      "isPremium": false
+    },
+    "verifiedAt": "2026-09-17T16:07:11Z"
+  }
+]
+```
 
 ---
 
-## 🔌 Integrations & Automation
+## Pricing
 
-You can easily integrate this Actor into your automated lead workflows:
-
-- **HubSpot / Salesforce:** Export contacts, run batch validation, and re-import enriched columns.
-- **Make.com & Zapier:** Trigger this Actor whenever a new lead signs up via Webhooks, and sync validated status back to your database.
-- **Apify API & Python/Node.js SDK:** Trigger runs programmatically from your own backend or ETL pipelines.
+Pay only for the results you get — one flat charge per lead verified. Numbers that are completely invalid or couldn't be checked are never charged.
 
 ---
 
-## ❓ Frequently Asked Questions (FAQ)
+## Real-time API
 
-#### Does this Actor preserve my existing CSV columns?
-**Yes.** All columns present in your uploaded CSV (such as `First Name`, `Last Name`, `Email`, `Company`, `Custom Tags`) are preserved and returned in the exact same output record alongside the enriched phone and messaging fields.
+Need checks on demand? Call the Actor like a live API from your backend, CRM, or automation platform (Make.com, Zapier, n8n):
 
-#### What phone number formats are supported?
-Any format: international standard (`+33612345678`), formatted with spaces/dashes (`+1 (415) 555-2671`), or national format without country code (`06 12 34 56 78`) by setting the `defaultCountry` parameter.
+```bash
+curl -X POST "https://api.apify.com/v2/acts/<YOUR_USERNAME>~crm-phone-messaging-validator/run-sync-get-dataset-items?token=<YOUR_APIFY_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phoneNumbers": ["+14155552671", "+33612345678"],
+    "platforms": ["whatsapp", "telegram"]
+  }'
+```
 
-#### How does timezone and business hours detection work?
-The Actor resolves the exact IANA timezone (e.g., `America/New_York`, `Europe/Paris`) from the phone country code and geographical prefix, computes current local time, and flags `isBusinessHours: true` if the local time is Monday through Friday between 9:00 AM and 6:00 PM.
+The response is a JSON array containing the verified data, lead scores, timezones, and messaging availability straight back in the HTTP response.
