@@ -86,8 +86,8 @@ class PlaywrightWhatsAppValidator:
                 try:
                     # Look for chat panel indicating active session
                     await self._page.wait_for_selector(
-                        "#pane-side, div[data-testid='chat-list']",
-                        timeout=8000
+                        "#pane-side, div[data-testid='chat-list'], div[aria-label='Chat list']",
+                        timeout=25000
                     )
                     self._is_authenticated = True
                     logger.info("Playwright WhatsApp Web session is authenticated and ready.")
@@ -127,31 +127,27 @@ class PlaywrightWhatsAppValidator:
                         error="WhatsApp not linked. Click 'Link WhatsApp (Scan QR)' first."
                     )
 
-                cleaned_num = e164_number.lstrip("+")
+                cleaned_num = e164_number.lstrip("+").replace(" ", "").replace("-", "")
                 url = f"https://web.whatsapp.com/send?phone={cleaned_num}"
-                await page.goto(url, wait_until="domcontentloaded", timeout=25000)
+                await page.goto(url, wait_until="domcontentloaded", timeout=35000)
 
-                # Race condition: either invalid number popup appears or chat box loads
-                invalid_selector = "div[data-animate-modal-popup='true'], div[role='dialog']"
-                chat_selector = "div[contenteditable='true'][data-tab='10'], footer"
+                # Poll for up to 20 seconds for resolution:
+                # - If "Starting chat" dialog appears, wait for it to finish.
+                # - If error dialog ("isn't on WhatsApp") appears, return isRegistered=False.
+                # - If conversation panel (#main, input box) loads, return isRegistered=True.
+                for _ in range(20):
+                    await asyncio.sleep(1)
 
-                try:
-                    # Wait for one of the two indicators
-                    result = await page.wait_for_selector(
-                        f"{invalid_selector}, {chat_selector}",
-                        timeout=15000
-                    )
-
-                    if not result:
-                        return WhatsAppResult(isRegistered=False, error="Navigation timeout")
-
-                    # Check if invalid popup appeared
-                    popup = await page.query_selector(invalid_selector)
-                    if popup:
-                        popup_text = (await popup.inner_text()).lower()
-                        if "invalid" in popup_text or "invalide" in popup_text or "url" in popup_text:
-                            # Dismiss popup if ok button exists
-                            ok_btn = await popup.query_selector("button")
+                    # 1. Check for modal dialogs
+                    dialog = await page.query_selector("div[data-animate-modal-popup='true'], div[role='dialog']")
+                    if dialog:
+                        txt = (await dialog.inner_text()).lower()
+                        # If transient spinner is present, keep waiting
+                        if "starting chat" in txt or "démarrage" in txt or "chargement" in txt:
+                            continue
+                        # If error dialog appeared
+                        if "whatsapp" in txt or "invalid" in txt or "ok" in txt:
+                            ok_btn = await dialog.query_selector("button")
                             if ok_btn:
                                 await ok_btn.click()
                             return WhatsAppResult(
@@ -160,15 +156,15 @@ class PlaywrightWhatsAppValidator:
                                 error="Account not registered on WhatsApp"
                             )
 
-                    # Check for chat box
-                    chat_box = await page.query_selector(chat_selector)
-                    if chat_box:
+                    # 2. Check for conversation panel
+                    main_chat = await page.query_selector("#main, div[data-testid='conversation-panel-wrapper'], footer div[contenteditable='true']")
+                    if main_chat:
                         # Check header for business indicators
                         is_business = False
-                        header = await page.query_selector("header")
+                        header = await page.query_selector("#main header, header")
                         if header:
                             header_text = (await header.inner_text()).lower()
-                            if "business" in header_text or "professionnel" in header_text:
+                            if "business" in header_text or "professionnel" in header_text or "compte pro" in header_text:
                                 is_business = True
 
                         return WhatsAppResult(
@@ -177,10 +173,7 @@ class PlaywrightWhatsAppValidator:
                             error=None
                         )
 
-                except Exception as wait_err:
-                    logger.debug(f"Playwright selector wait: {wait_err}")
-
-                return WhatsAppResult(isRegistered=False, error="Could not determine registration status")
+                return WhatsAppResult(isRegistered=False, error="Could not determine registration status (Timeout)")
 
             except Exception as e:
                 logger.error(f"Playwright WhatsApp verification error for {e164_number}: {e}")
