@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import os
+import sys
 from typing import Dict, List, Optional
 from playwright.async_api import BrowserContext, Page, async_playwright
 

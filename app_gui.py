@@ -391,16 +391,16 @@ class NumberCheckerApp(ctk.CTk):
         self.tree.heading("score", text="Score")
         self.tree.heading("channel", text="Best Channel")
         self.tree.heading("timezone", text="Timezone")
-        self.tree.heading("business_hours", text="Safe to Contact?")
+        self.tree.heading("business_hours", text="Outreach Window (Compliance)")
 
-        self.tree.column("phone", width=130, anchor="w")
-        self.tree.column("carrier", width=110, anchor="w")
-        self.tree.column("whatsapp", width=95, anchor="center")
-        self.tree.column("telegram", width=95, anchor="center")
-        self.tree.column("score", width=65, anchor="center")
-        self.tree.column("channel", width=105, anchor="center")
-        self.tree.column("timezone", width=130, anchor="w")
-        self.tree.column("business_hours", width=110, anchor="center")
+        self.tree.column("phone", width=140, anchor="w")
+        self.tree.column("carrier", width=120, anchor="w")
+        self.tree.column("whatsapp", width=110, anchor="center")
+        self.tree.column("telegram", width=110, anchor="center")
+        self.tree.column("score", width=70, anchor="center")
+        self.tree.column("channel", width=120, anchor="center")
+        self.tree.column("timezone", width=130, anchor="center")
+        self.tree.column("business_hours", width=150, anchor="center")
 
         # Scrollbar for treeview
         scrollbar = ttk.Scrollbar(self.table_frame, orient="vertical", command=self.tree.yview)
@@ -411,7 +411,7 @@ class NumberCheckerApp(ctk.CTk):
         # Legend / Explanation below table
         self.lbl_legend = ctk.CTkLabel(
             self.right_panel,
-            text="ℹ️ Safe to Contact: Evaluates lead local timezone (Mon–Fri, 9:00 AM – 6:00 PM). Weekends & off-hours are flagged '🌙 No' for compliance.",
+            text="ℹ️ Outreach Window (Compliance): Evaluates lead local timezone (Mon–Fri, 9:00 AM – 6:00 PM). Weekends & off-hours are flagged '🌙 Weekend / Night' for cold outreach compliance.",
             font=ctk.CTkFont(size=11),
             text_color="#8b949e"
         )
