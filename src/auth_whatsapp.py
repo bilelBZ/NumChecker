@@ -12,6 +12,16 @@ logger = logging.getLogger(__name__)
 
 def get_whatsapp_session_dir() -> str:
     """Get absolute path to persistent WhatsApp session storage."""
+    # 1. Check root storage directory
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "whatsapp_session"))
+    if os.path.exists(os.path.join(root_dir, "session_active.marker")):
+        return root_dir
+
+    # 2. Check dist directory (where .exe creates it)
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dist", "storage", "whatsapp_session"))
+    if os.path.exists(os.path.join(dist_dir, "session_active.marker")):
+        return dist_dir
+
     if getattr(sys, "frozen", False):
         base_dir = os.path.dirname(sys.executable)
     else:

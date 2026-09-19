@@ -283,7 +283,7 @@ class NumberCheckerApp(ctk.CTk):
 
         self.cbo_country = ctk.CTkComboBox(
             self.left_panel,
-            values=["US (+1)", "FR (+33)", "GB (+44)", "DE (+49)", "ES (+34)", "IN (+91)", "BR (+55)", "AE (+971)"]
+            values=["US (+1)", "TN (+216)", "FR (+33)", "GB (+44)", "DE (+49)", "ES (+34)", "IN (+91)", "BR (+55)", "AE (+971)"]
         )
         self.cbo_country.set("US (+1)")
         self.cbo_country.pack(fill="x", padx=12, pady=2)

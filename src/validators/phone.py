@@ -1,6 +1,7 @@
 """Phone number formatting, E.164 standardization, carrier, timezone and region validation."""
 from dataclasses import dataclass
 from datetime import datetime
+import re
 from typing import Optional, Tuple
 from zoneinfo import ZoneInfo
 
@@ -98,27 +99,50 @@ class PhoneValidator:
                 error="Empty input"
             )
 
-        try:
-            parsed = phonenumbers.parse(raw_cleaned, region)
-        except NumberParseException as e:
-            return PhoneSanitizationResult(
-                input_number=raw_number,
-                e164=None,
-                country=None,
-                valid_format=False,
-                is_possible=False,
-                carrier=None,
-                carrier_name=None,
-                number_type="Unknown",
-                is_messaging_capable=False,
-                region_description=None,
-                error=f"Parsing error: {e._msg}"
-            )
+        cleaned = re.sub(r"[^\d+]", "", raw_cleaned)
+        if cleaned.startswith("00"):
+            cleaned = "+" + cleaned[2:]
 
-        is_valid = phonenumbers.is_valid_number(parsed)
-        is_possible = phonenumbers.is_possible_number(parsed)
+        parsed = None
+        # 1. If starts with +, parse directly
+        if cleaned.startswith("+"):
+            try:
+                p = phonenumbers.parse(cleaned, None)
+                if phonenumbers.is_valid_number(p) or phonenumbers.is_possible_number(p):
+                    parsed = p
+            except Exception:
+                pass
 
-        if not is_possible and not is_valid:
+        # 2. If no +, try with + prefixed (Excel/CRM international export format e.g. 216..., 33..., 1...)
+        if parsed is None and not cleaned.startswith("+"):
+            try:
+                p = phonenumbers.parse("+" + cleaned, None)
+                if phonenumbers.is_valid_number(p):
+                    parsed = p
+            except Exception:
+                pass
+
+        # 3. Try with selected region fallback
+        if parsed is None:
+            try:
+                p = phonenumbers.parse(cleaned, region)
+                if phonenumbers.is_valid_number(p) or phonenumbers.is_possible_number(p):
+                    parsed = p
+            except Exception:
+                pass
+
+        # 4. Fallback to common international regions (TN, FR, GB, US, DE, ES, IN)
+        if parsed is None:
+            for r in ["TN", "FR", "GB", "US", "DE", "ES", "IN"]:
+                try:
+                    p = phonenumbers.parse(cleaned, r)
+                    if phonenumbers.is_valid_number(p):
+                        parsed = p
+                        break
+                except Exception:
+                    pass
+
+        if parsed is None:
             return PhoneSanitizationResult(
                 input_number=raw_number,
                 e164=None,
@@ -133,6 +157,8 @@ class PhoneValidator:
                 error="Invalid phone number structure"
             )
 
+        is_valid = phonenumbers.is_valid_number(parsed)
+        is_possible = phonenumbers.is_possible_number(parsed)
         e164_formatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
         country_iso = phonenumbers.region_code_for_number(parsed)
         if not country_iso:
