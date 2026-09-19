@@ -5,14 +5,11 @@ import os
 from typing import Dict, List, Optional
 from playwright.async_api import BrowserContext, Page, async_playwright
 
+from src.auth_whatsapp import get_whatsapp_session_dir
 from src.models import WhatsAppResult
 from src.utils.rate_limiter import AsyncRateLimiter
 
 logger = logging.getLogger(__name__)
-
-DEFAULT_SESSION_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "storage", "whatsapp_session")
-)
 
 
 class PlaywrightWhatsAppValidator:
@@ -25,7 +22,7 @@ class PlaywrightWhatsAppValidator:
         headless: bool = True,
         simulation_mode: bool = False,
     ):
-        self.session_dir = session_dir or DEFAULT_SESSION_DIR
+        self.session_dir = session_dir or get_whatsapp_session_dir()
         self.rate_limiter = rate_limiter or AsyncRateLimiter(requests_per_second=1.0, max_concurrency=1)
         self.headless = headless
         self.simulation_mode = simulation_mode
@@ -44,9 +41,21 @@ class PlaywrightWhatsAppValidator:
             if self._page is None or self._page.is_closed():
                 os.makedirs(self.session_dir, exist_ok=True)
                 self._playwright = await async_playwright().start()
-                # On Windows use system Chrome to avoid heavy downloads; in Docker/Linux use default Chromium
-                import platform
-                browser_channel = "chrome" if platform.system() == "Windows" else None
+
+                browser_channel = None
+                if sys.platform == "win32":
+                    chrome_paths = [
+                        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+                    ]
+                    edge_paths = [
+                        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+                    ]
+                    if any(os.path.exists(p) for p in chrome_paths):
+                        browser_channel = "chrome"
+                    elif any(os.path.exists(p) for p in edge_paths):
+                        browser_channel = "msedge"
 
                 launch_kwargs = {
                     "user_data_dir": self.session_dir,
@@ -61,7 +70,15 @@ class PlaywrightWhatsAppValidator:
                 if browser_channel:
                     launch_kwargs["channel"] = browser_channel
 
-                self._context = await self._playwright.chromium.launch_persistent_context(**launch_kwargs)
+                try:
+                    self._context = await self._playwright.chromium.launch_persistent_context(**launch_kwargs)
+                except Exception:
+                    if "channel" in launch_kwargs:
+                        launch_kwargs.pop("channel")
+                        self._context = await self._playwright.chromium.launch_persistent_context(**launch_kwargs)
+                    else:
+                        raise
+
                 self._page = await self._context.new_page()
 
                 # Test if already authenticated

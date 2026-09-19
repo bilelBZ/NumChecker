@@ -1,0 +1,10 @@
+dist/
+build/
+codecanyon_package/
+*.zip
+*.spec
+__pycache__/
+*.pyc
+storage/whatsapp_session/
+.env
+

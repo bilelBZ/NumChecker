@@ -1,0 +1,8 @@
+First Name,Last Name,Company,Title,Email,phone,Status,Custom Tag
+Sarah,Jenkins,TechFlow AI,VP Sales,sarah@techflow.ai,+14155552671,New Lead,VIP Prospect
+Mike,Chen,Innovate LLC,Head of Growth,mike@innovate.co,+447911123456,Contacted,Enterprise
+Anya,Sharma,Apex Dynamics,Founder,anya@apexdynamics.io,+33612345678,Qualified,Hot Lead
+David,Lee,Quant Capital,Managing Director,david@quantcap.com,0612345678,New Lead,Inbound
+Fatima,Khan,Global Link,Director Marketing,fatima@globallink.ae,+971501234567,New Lead,Webinar Attendee
+Alex,Taylor,Offline Corp,Operations Manager,alex@offlinecorp.com,+18005550199,Disqualified,Toll Free
+Invalid,Lead,Broken Records,Unknown,bad@email.com,12345,Invalid,Bad Number

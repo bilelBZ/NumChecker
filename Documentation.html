@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp & Telegram Number Checker - User Manual</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; line-height: 1.6; margin: 0; padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; background-color: #161b22; padding: 40px; border-radius: 12px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        h1, h2, h3 { color: #ffffff; }
+        h1 { border-bottom: 2px solid #30363d; padding-bottom: 12px; }
+        h2 { border-bottom: 1px solid #21262d; padding-bottom: 8px; margin-top: 30px; color: #58a6ff; }
+        code { background-color: #0d1117; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #79c0ff; }
+        pre { background-color: #0d1117; padding: 16px; border-radius: 8px; overflow-x: auto; border: 1px solid #30363d; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #30363d; }
+        th { background-color: #21262d; color: #ffffff; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+        .badge-wa { background-color: rgba(37, 211, 102, 0.2); color: #25d366; border: 1px solid #25d366; }
+        .badge-tg { background-color: rgba(42, 171, 238, 0.2); color: #2aabee; border: 1px solid #2aabee; }
+        .badge-score { background-color: rgba(210, 153, 34, 0.2); color: #d29922; border: 1px solid #d29922; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>WhatsApp & Telegram Number Checker</h1>
+    <p><strong>Version 1.0.0</strong> | Standalone Windows Desktop Software</p>
+
+    <h2>1. Quick Start (No Setup Required)</h2>
+    <ol>
+        <li>Double click <code>WhatsApp_Telegram_Validator.exe</code> to open the software.</li>
+        <li><strong>Link WhatsApp (Free):</strong> Click <strong>🔗 Link WhatsApp (Scan QR)</strong> and scan the QR code once with your phone. Once connected, your badge displays <strong>🟢 Linked & Ready</strong>!</li>
+        <li><strong>Choose Mode:</strong> Toggle <strong>🟢 Live Verification Mode</strong> for real-time checks, or <strong>🧪 Offline Demo Mode</strong> for local processing.</li>
+        <li>Click <strong>Choose CSV / File...</strong> and select your lead list (you can test with the included <code>sample_apollo_leads.csv</code>).</li>
+        <li>Select platforms: <span class="badge badge-wa">WhatsApp</span> and <span class="badge badge-tg">Telegram</span>.</li>
+        <li>Click <strong>▶ Start Validation</strong>.</li>
+        <li>When completed, click <strong>💾 Export Enriched CSV</strong> to save your results.</li>
+    </ol>
+
+    <h2>2. Key Features</h2>
+    <ul>
+        <li><strong>Free WhatsApp Web Engine:</strong> Connect via QR code and validate real WhatsApp numbers with zero Meta Graph API fees or monthly token costs.</li>
+        <li><strong>Full CSV Passthrough:</strong> Keeps all original columns (First Name, Company, Email, Apollo ID) and appends validation results to each row.</li>
+        <li><strong>0–100 Lead Quality Scoring:</strong> Evaluates carrier type and messaging presence to provide an instant composite deliverability rating.</li>
+        <li><strong>Timezone & Business Hours:</strong> Detects local time and safe contact windows (Monday–Friday 9 AM – 6 PM in lead's timezone).</li>
+        <li><strong>Google libphonenumber:</strong> E.164 standardization, carrier brand detection, and landline/VoIP filtering.</li>
+        <li><strong>Telegram Premium:</strong> Detects active Telegram Premium subscribers.</li>
+    </ul>
+
+    <h2>3. Settings & API Configuration</h2>
+    <p>Click the <strong>⚙️ Settings</strong> button in the top right:</p>
+    <ul>
+        <li><strong>Free WhatsApp Engine:</strong> Scan QR code from the main window. No API setup required.</li>
+        <li><strong>Offline Simulation Mode:</strong> Runs offline on your CPU with zero network calls. Ideal for quick demos and data formatting checks.</li>
+        <li><strong>WhatsApp Cloud API (Optional):</strong> Enter your Meta Access Token and Phone Number ID if you prefer using the official Meta Cloud API.</li>
+        <li><strong>Telegram MTProto (Optional):</strong> Enter your free Telegram API ID and Hash from <code>my.telegram.org</code> for direct live MTProto resolution with automated address-book cleanup.</li>
+    </ul>
+
+    <h2>4. Output Fields Reference</h2>
+    <table>
+        <tr><th>Column</th><th>Description</th></tr>
+        <tr><td><code>e164</code></td><td>Standardized phone number (e.g. +14155552671)</td></tr>
+        <tr><td><code>carrier</code></td><td>Carrier brand (Orange, Verizon) or line type (Mobile, VoIP, Landline)</td></tr>
+        <tr><td><code>leadQualityScore</code></td><td>Composite 0–100 reachability rating</td></tr>
+        <tr><td><code>recommendedChannel</code></td><td>Best channel: WhatsApp, Telegram, SMS/Phone, Email Only</td></tr>
+        <tr><td><code>timezone</code></td><td>Local IANA timezone (e.g. America/New_York)</td></tr>
+        <tr><td><code>isBusinessHours</code></td><td>Safe to contact: true / false</td></tr>
+        <tr><td><code>whatsapp</code></td><td>Registered status (true/false) and account type (business/regular)</td></tr>
+        <tr><td><code>telegram</code></td><td>Registered status (true/false), @username, and isPremium</td></tr>
+    </table>
+</div>
+</body>
+</html>
