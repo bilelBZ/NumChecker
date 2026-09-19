@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redeem Your AppSumo Code — NumChecker</title>
+    <link rel="icon" type="image/x-icon" href="logo.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --card-border: #1f2937;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            max-width: 560px;
+            width: 100%;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+        .logo-img {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+        p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #d1d5db; }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1e293b;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .btn-redeem {
+            background-color: var(--primary);
+            color: #042f1f;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-redeem:hover {
+            background-color: var(--primary-hover);
+            color: #fff;
+        }
+        .download-box {
+            display: none;
+            margin-top: 30px;
+            padding: 24px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            text-align: left;
+        }
+        .download-box h3 { color: #34d399; font-size: 1.15rem; margin-bottom: 8px; }
+        .download-box p { color: #d1d5db; font-size: 0.9rem; margin-bottom: 16px; }
+        .btn-download {
+            display: block;
+            text-align: center;
+            background: #059669;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .steps {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img src="logo.jpg" alt="NumChecker Logo" class="logo-img">
+    <h1>Redeem AppSumo Code</h1>
+    <p class="subtitle">Enter your purchase code below to unlock your lifetime download.</p>
+
+    <div id="redemptionForm">
+        <div class="input-group">
+            <label for="code">Your AppSumo Code</label>
+            <input type="text" id="code" placeholder="e.g. NC-ABCD-1234-EF56" required>
+        </div>
+        <button class="btn-redeem" onclick="handleRedeem()">Unlock Lifetime Package</button>
+    </div>
+
+    <div class="download-box" id="downloadArea">
+        <h3>🎉 Code Verified Successfully!</h3>
+        <p>Your lifetime license is activated. Download the complete software package below:</p>
+        <a href="https://github.com/bilelBZ/NumChecker/raw/main/WhatsApp_Telegram_Number_Checker_v1.0.0_CodeCanyon.zip" class="btn-download">💾 Download NumChecker Package (.ZIP)</a>
+        
+        <div class="steps">
+            <strong>Quick Start Instructions:</strong>
+            <ol style="margin-left: 18px; margin-top: 6px;">
+                <li>Unzip the downloaded archive.</li>
+                <li>Double-click <code>WhatsApp_Telegram_Validator.exe</code> to launch.</li>
+                <li>Click <strong>🔗 Link WhatsApp</strong> to scan the QR code once with your phone.</li>
+                <li>Check <a href="Documentation.html" style="color:#34d399;" target="_blank">Documentation.html</a> for user guides.</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<script>
+function handleRedeem() {
+    const val = document.getElementById('code').value.trim();
+    if (val.length >= 6) {
+        document.getElementById('redemptionForm').style.display = 'none';
+        document.getElementById('downloadArea').style.display = 'block';
+    } else {
+        alert('Please enter a valid AppSumo code.');
+    }
+}
+</script>
+
+</body>
+</html>
