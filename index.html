@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NumChecker — Free WhatsApp & Telegram Number Validator for CRM Leads</title>
+    <meta name="description" content="Validate bulk phone numbers for WhatsApp & Telegram with 0 API fees. Standalone Windows app for cold outreach and lead generation teams.">
+    <link rel="icon" type="image/x-icon" href="logo.ico">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --card-border: #1f2937;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --tg-blue: #0284c7;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        /* Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #fff;
+            text-decoration: none;
+        }
+        .logo-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: #fff;
+        }
+        .btn-cta-nav {
+            background-color: var(--primary);
+            color: #000;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-cta-nav:hover {
+            background-color: var(--primary-hover);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 8% 60px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .badge-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 9999px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 40%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto 36px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: #042f1f;
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #1e293b;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid var(--card-border);
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #334155;
+        }
+
+        /* Screenshot / Preview */
+        .preview-wrapper {
+            margin: 50px auto 0;
+            max-width: 1050px;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 40px var(--accent-glow);
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+        .preview-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Value Props */
+        .features {
+            padding: 80px 8%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 30px;
+            transition: border-color 0.2s;
+        }
+        .feature-card:hover {
+            border-color: #374151;
+        }
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* How it works */
+        .steps-section {
+            background: #0d1322;
+            padding: 80px 8%;
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 40px auto 0;
+        }
+        .step-box {
+            text-align: center;
+        }
+        .step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        /* Pricing Card */
+        .pricing-section {
+            padding: 80px 8%;
+            text-align: center;
+        }
+        .pricing-card {
+            background: linear-gradient(180deg, #161e2e 0%, #111827 100%);
+            border: 1px solid #374151;
+            border-radius: 18px;
+            max-width: 460px;
+            margin: 40px auto 0;
+            padding: 40px 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .ribbon {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #042f1f;
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 4px 14px;
+            border-radius: 999px;
+            letter-spacing: 0.5px;
+        }
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 15px 0 6px;
+        }
+        .price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 25px 0 35px;
+        }
+        .pricing-features li {
+            padding: 8px 0;
+            color: #d1d5db;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 40px 8%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <a href="#" class="logo-container">
+            <img src="logo.jpg" alt="NumChecker Logo" class="logo-img">
+            <span>NumChecker</span>
+        </a>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="Documentation.html">User Manual</a>
+            <a href="#pricing" class="btn-cta-nav">Get App</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="badge-tag">
+            <span>⚡ 100% Free WhatsApp & Telegram Verification • 0 Monthly Fees</span>
+        </div>
+        <h1>Validate Bulk Phone Numbers For WhatsApp & Telegram</h1>
+        <p>Clean CRM lead lists from Apollo, HubSpot, and Salesforce. Verify live WhatsApp presence, Telegram accounts, carrier brands, and cold-outreach compliance windows with zero API costs.</p>
+        <div class="hero-actions">
+            <a href="#pricing" class="btn-primary">Download Standalone App (.exe)</a>
+            <a href="https://github.com/bilelBZ/NumChecker" class="btn-secondary" target="_blank">View GitHub Repository</a>
+        </div>
+
+        <div class="preview-wrapper">
+            <img src="marketing_preview.jpg" alt="NumChecker Interface Preview" class="preview-img">
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Everything B2B Sales & Growth Teams Need</h2>
+            <p>Built for cold emailers, sales agencies, and scrapers filtering 1,000s of contacts daily.</p>
+        </div>
+
+        <div class="grid-3">
+            <div class="feature-card">
+                <span class="card-icon">💬</span>
+                <h3>Free WhatsApp Web Engine</h3>
+                <p>Link your phone via QR code once. Verify real WhatsApp & WhatsApp Business registrations directly from your desktop with zero Meta Cloud API fees.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">✈️</span>
+                <h3>Telegram Live & Premium</h3>
+                <p>Verify active Telegram users, detect public usernames, and identify high-value Telegram Premium subscribers automatically.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">📊</span>
+                <h3>0–100 Lead Quality Scoring</h3>
+                <p>Calculates an instant deliverability score based on carrier type (Mobile vs VoIP/Burner) and multi-channel messaging availability.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">🕒</span>
+                <h3>TCPA / GDPR Compliance</h3>
+                <p>Detects lead local timezone and indicates legal contact windows (Mon–Fri, 9:00 AM – 6:00 PM) to keep outreach compliant.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">📁</span>
+                <h3>Full CRM CSV Passthrough</h3>
+                <p>Upload your Apollo.io or CRM exports. All original columns are preserved untouched, with verified columns cleanly appended.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">💻</span>
+                <h3>Standalone Windows .EXE</h3>
+                <p>No Python installation, no terminal commands, and no Docker needed. Double-click <code>WhatsApp_Telegram_Validator.exe</code> and start immediately.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="steps-section" id="how-it-works">
+        <div class="section-header">
+            <h2>Three Simple Steps to Clean Lead Lists</h2>
+            <p>From raw CSV to verified multi-channel outreach in under 2 minutes.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <h3>Scan QR Code</h3>
+                <p>Click "Link WhatsApp" and scan the QR code with your mobile app. Your session is securely stored on your own PC.</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <h3>Import Leads CSV</h3>
+                <p>Drag and drop your contact spreadsheet or paste numbers directly into the single validator.</p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <h3>Export Enriched Data</h3>
+                <p>Filter active WhatsApp contacts and export an enriched CSV ready for your outreach sequencer or dialer.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Acquisition -->
+    <section class="pricing-section" id="pricing">
+        <div class="section-header">
+            <h2>Lifetime Access, Zero Subscriptions</h2>
+            <p>Stop paying \$0.05 per verification on Twilio or Numverify.</p>
+        </div>
+
+        <div class="pricing-card">
+            <div class="ribbon">LIFETIME LICENSE</div>
+            <h3>NumChecker Desktop</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Standalone Windows Executable + Full Source Code</p>
+            <div class="price">$39 <span>/ one-time</span></div>
+
+            <ul class="pricing-features">
+                <li>Unlimited local phone verifications</li>
+                <li>Free WhatsApp Web session scanner</li>
+                <li>Telegram registration & Premium check</li>
+                <li>Google libphonenumber carrier detection</li>
+                <li>TCPA / GDPR compliance timezone engine</li>
+                <li>Full CRM CSV passthrough (Apollo, HubSpot)</li>
+                <li>Lifetime updates & documentation</li>
+            </ul>
+
+            <a href="https://github.com/bilelBZ/NumChecker" class="btn-primary" style="display: block; width: 100%;">Get Instant Access</a>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 14px;">Compatible with Windows 10 & Windows 11 (64-bit)</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 NumChecker • Created by Bilel BZ • <a href="https://github.com/bilelBZ/NumChecker" target="_blank">GitHub Repository</a> • <a href="Documentation.html">Documentation</a></p>
+    </footer>
+
+</body>
+</html>
