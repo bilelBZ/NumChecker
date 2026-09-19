@@ -1,149 +1,56 @@
-# CRM Phone & Messaging Validator (WhatsApp & Telegram)
+# NumChecker — Free WhatsApp & Telegram Number Validator for CRM Leads
 
-**CRM Phone & Messaging Validator** is a bulk phone and messaging availability checker: feed it a list of phone numbers or an Apollo/HubSpot CSV and get back standardized formatting, carrier details, and registered availability for WhatsApp and Telegram. Download the results as JSON, CSV, Excel, HTML, or XML.
+<p align="center">
+  <img src="marketing_preview.jpg" alt="NumChecker Dashboard Preview" width="100%">
+</p>
 
-Use it to check if a number is on WhatsApp or Telegram, clean CRM phone lists, detect timezones, and verify leads before a sales campaign. It runs in the cloud and needs no coding.
-
-**Full CRM CSV Passthrough:** Upload your Apollo, HubSpot, or Salesforce CSV export. The Actor keeps all your original columns (`First Name`, `Company`, `Email`, `Custom Tags`, etc.) and appends the validation results directly to each row.
-
----
-
-## What does it do?
-
-For each phone number or CSV lead, the Actor:
-- **Standardizes format first** — parses numbers to international E.164 format and identifies carrier brand and line type (`Mobile`, `Fixed Line`, `VoIP`, `Toll Free`), so every charge goes to a real check.
-- **Checks WhatsApp registration** — confirms whether the number is a registered WhatsApp account and identifies Business vs. Regular profiles.
-- **Checks Telegram registration** — confirms whether the number is registered on Telegram, extracts public `@username`, and checks Telegram Premium status.
-- **Detects Timezone & Business Hours** — resolves the local IANA timezone and calculates whether it is safe to contact right now (Monday–Friday, 9:00 AM – 6:00 PM local time).
-- **Calculates Lead Quality Score** — gives an instant 0–100 reachability score and recommends the best outreach channel (`WhatsApp`, `Telegram`, `SMS / Phone`, or `Email Only`).
+<p align="center">
+  <a href="https://bilelbz.gumroad.com/l/xwkwpr"><b>🛒 Get Lifetime Access on Gumroad ($29)</b></a> •
+  <a href="https://bilelbz.github.io/NumChecker/redeem.html"><b>🎁 Redeem AppSumo Code</b></a> •
+  <a href="https://bilelbz.github.io/NumChecker/"><b>🌐 Official Website</b></a> •
+  <a href="https://bilelbz.github.io/NumChecker/Documentation.html"><b>📖 Documentation</b></a>
+</p>
 
 ---
 
-## What data does it return?
+## ⚡ What is NumChecker?
 
-Each result is one row per phone number (or one row per CSV record):
+**NumChecker** is a standalone Windows desktop software that verifies bulk phone numbers for live **WhatsApp** and **Telegram** availability, detects mobile carriers, and calculates TCPA/GDPR compliance outreach hours — **with 100% zero recurring API fees**.
 
-| Data | Details |
-| :--- | :--- |
-| **🏢 CRM Columns** | All your original columns from your uploaded CSV (First Name, Company, Email, etc.) preserved intact |
-| **📱 Number (E.164)** | The standardized phone number with country prefix (e.g., `+14155552671`) |
-| **🏷️ Carrier & Type** | Network carrier name (e.g., Orange, Verizon) and line classification (`Mobile`, `Fixed Line`, `VoIP`) |
-| **💬 WhatsApp** | Registration status (`true` / `false`) and account type (`business` / `regular`) |
-| **✈️ Telegram** | Registration status (`true` / `false`), public `@username`, and Telegram Premium badge |
-| **🕒 Timezone & Local Time** | Lead's local IANA timezone (e.g., `America/Los_Angeles`) and current local time |
-| **☀️ Business Hours** | Whether the lead is currently within business hours (`true` / `false`) |
-| **📊 Lead Quality Score** | 0–100 composite deliverability score and recommended outreach channel |
-| **🕒 Verified At** | UTC timestamp of when the check was performed |
-
-Every number that could be processed gets its own row with full intelligence. If a number is malformed or invalid, it is flagged with `validFormat: false`, `leadQualityScore: 0`, and a clear error explanation so you can purge dead leads immediately.
+Built specifically for cold outreach teams, lead generation agencies, and growth hackers exporting contacts from Apollo.io, HubSpot, or Salesforce.
 
 ---
 
-## Input
+## 🔥 Key Features
 
-Provide an array of phone numbers, or paste raw CSV text with lead details:
-
-### Option A: Simple Phone List
-```json
-{
-  "phoneNumbers": [
-    "+14155552671",
-    "+33612345678",
-    "+447911123456"
-  ],
-  "platforms": ["whatsapp", "telegram"],
-  "defaultCountry": "US"
-}
-```
-
-### Option B: CRM CSV Passthrough (Apollo / HubSpot)
-```json
-{
-  "csvContent": "First Name,Company,Email,phone\nSarah,FinTech Corp,sarah@fintech.io,+14155552671\nMarc,SaaS Lab,marc@saas.com,+33612345678",
-  "platforms": ["whatsapp", "telegram"]
-}
-```
+- **Free WhatsApp Web Engine:** Link your WhatsApp via QR code once. Verify real WhatsApp & WhatsApp Business registrations directly from your desktop with zero Meta Cloud API fees.
+- **Telegram Live & Premium:** Detect active Telegram accounts, public usernames, and identify high-value Telegram Premium subscribers automatically.
+- **0–100 Lead Quality Scoring:** Evaluates line classification (Mobile vs VoIP/Burner lines) and multi-channel availability to generate an instant composite deliverability rating.
+- **TCPA & GDPR Outreach Hours:** Automatically detects the lead's local timezone to indicate legal cold contact windows (Monday–Friday, 9:00 AM – 6:00 PM).
+- **Full CRM CSV Passthrough:** Upload your Apollo or CRM CSV exports. All original columns are preserved untouched, with verified columns cleanly appended.
+- **Standalone Windows .EXE:** No Python installation, no Docker, and no terminal commands required. Double-click `WhatsApp_Telegram_Validator.exe` and start immediately.
 
 ---
 
-## Output
+## 🚀 How to Get Started
 
-```json
-[
-  {
-    "First Name": "Sarah",
-    "Company": "FinTech Corp",
-    "Email": "sarah@fintech.io",
-    "input": "+14155552671",
-    "e164": "+14155552671",
-    "country": "US",
-    "validFormat": true,
-    "carrier": "T-Mobile",
-    "leadQualityScore": 95,
-    "recommendedChannel": "WhatsApp",
-    "riskLevel": "Low",
-    "timezone": "America/Los_Angeles",
-    "localTime": "09:15 AM",
-    "isBusinessHours": true,
-    "whatsapp": {
-      "isRegistered": true,
-      "accountType": "business"
-    },
-    "telegram": {
-      "isRegistered": true,
-      "hasUsername": true,
-      "isPremium": true
-    },
-    "verifiedAt": "2026-09-17T16:07:11Z"
-  },
-  {
-    "First Name": "Marc",
-    "Company": "SaaS Lab",
-    "Email": "marc@saas.com",
-    "input": "+33612345678",
-    "e164": "+33612345678",
-    "country": "FR",
-    "validFormat": true,
-    "carrier": "Orange",
-    "leadQualityScore": 75,
-    "recommendedChannel": "WhatsApp",
-    "riskLevel": "Low",
-    "timezone": "Europe/Paris",
-    "localTime": "06:15 PM",
-    "isBusinessHours": false,
-    "whatsapp": {
-      "isRegistered": true,
-      "accountType": "regular"
-    },
-    "telegram": {
-      "isRegistered": false,
-      "hasUsername": false,
-      "isPremium": false
-    },
-    "verifiedAt": "2026-09-17T16:07:11Z"
-  }
-]
-```
+1. **Purchase on Gumroad:** [https://bilelbz.gumroad.com/l/xwkwpr](https://bilelbz.gumroad.com/l/xwkwpr) (or redeem your code at [Redeem Page](https://bilelbz.github.io/NumChecker/redeem.html)).
+2. Download and unzip your package.
+3. Run `WhatsApp_Telegram_Validator.exe`.
+4. Click **🔗 Link WhatsApp** to scan the QR code once with your phone.
+5. Import your leads spreadsheet and click **▶ Start Validation**!
 
 ---
 
-## Pricing
+## 💻 System Requirements
 
-Pay only for the results you get — one flat charge per lead verified. Numbers that are completely invalid or couldn't be checked are never charged.
+- **Operating System:** Windows 10 or Windows 11 (64-bit)
+- **Browser:** Google Chrome or Microsoft Edge installed (used for headless local WhatsApp session)
 
 ---
 
-## Real-time API
+## 📞 Support & Community
 
-Need checks on demand? Call the Actor like a live API from your backend, CRM, or automation platform (Make.com, Zapier, n8n):
-
-```bash
-curl -X POST "https://api.apify.com/v2/acts/<YOUR_USERNAME>~crm-phone-messaging-validator/run-sync-get-dataset-items?token=<YOUR_APIFY_TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "phoneNumbers": ["+14155552671", "+33612345678"],
-    "platforms": ["whatsapp", "telegram"]
-  }'
-```
-
-The response is a JSON array containing the verified data, lead scores, timezones, and messaging availability straight back in the HTTP response.
+- **User Documentation:** [Full Documentation & Manual](https://bilelbz.github.io/NumChecker/Documentation.html)
+- **Official Site:** [https://bilelbz.github.io/NumChecker/](https://bilelbz.github.io/NumChecker/)
+- **Author:** Bilel Bouzid
