@@ -1,21 +1,10 @@
-# Private Application Source Code (Protected)
-src/
-tests/
-.actor/
-*.py
-*.pyc
-__pycache__/
-Dockerfile
-requirements.txt
-CODECANYON_USER_GUIDE.md
-
-# Compiled Binaries & Release Archives
 dist/
 build/
 codecanyon_package/
 *.zip
 *.spec
-
-# Storage & Secrets
-storage/
+__pycache__/
+*.pyc
+storage/whatsapp_session/
 .env
+

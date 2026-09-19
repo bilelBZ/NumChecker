@@ -1,0 +1,24 @@
+{
+    "actorSpecification": 1,
+    "name": "crm-phone-messaging-validator",
+    "title": "CRM Phone & Messaging Validator (WhatsApp & Telegram)",
+    "description": "Bulk phone validator for WhatsApp & Telegram with 0-100 lead scoring, timezone detection, and CRM CSV passthrough.",
+    "version": "1.0.0",
+    "meta": {
+        "templateId": "python-empty",
+        "categories": [
+            "LEAD_GENERATION",
+            "MARKETING",
+            "DEVELOPER_TOOLS"
+        ],
+        "seoTitle": "WhatsApp & Telegram Number Checker | CRM Phone Validator",
+        "seoDescription": "Bulk verify phone numbers on WhatsApp & Telegram. Detect carriers, timezones, and lead scores while preserving Apollo/HubSpot CSV columns. Fast & cloud-based."
+    },
+    "dockerfile": "../Dockerfile",
+    "input": "./input_schema.json",
+    "output": "./output_schema.json",
+    "readme": "../README.md",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    }
+}

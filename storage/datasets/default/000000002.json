@@ -1,0 +1,28 @@
+{
+  "First Name": "Sarah",
+  "Company": "FinTech Corp",
+  "Email": "sarah@fintech.io",
+  "Status": "New Lead",
+  "input": "+14155552671",
+  "e164": "+14155552671",
+  "country": "US",
+  "validFormat": true,
+  "carrier": "Fixed Line or Mobile",
+  "leadQualityScore": 15,
+  "recommendedChannel": "Email Only (Landline)",
+  "riskLevel": "High (Non-Mobile)",
+  "timezone": "America/Los_Angeles",
+  "localTime": "09:07 AM",
+  "isBusinessHours": true,
+  "whatsapp": {
+    "isRegistered": false,
+    "accountType": "unknown",
+    "error": "Account not registered (Simulated)"
+  },
+  "telegram": {
+    "isRegistered": true,
+    "hasUsername": false,
+    "isPremium": false
+  },
+  "verifiedAt": "2026-09-17T16:07:11Z"
+}

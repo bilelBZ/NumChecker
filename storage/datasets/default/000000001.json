@@ -1,0 +1,28 @@
+{
+  "First Name": "Marc",
+  "Company": "SaaS Lab",
+  "Email": "marc@saas.com",
+  "Status": "Qualified",
+  "input": "+447911123456",
+  "e164": "+447911123456",
+  "country": "GG",
+  "validFormat": true,
+  "carrier": "JT",
+  "leadQualityScore": 75,
+  "recommendedChannel": "WhatsApp",
+  "riskLevel": "Low",
+  "timezone": "Europe/Guernsey",
+  "localTime": "05:07 PM",
+  "isBusinessHours": true,
+  "whatsapp": {
+    "isRegistered": true,
+    "accountType": "regular"
+  },
+  "telegram": {
+    "isRegistered": false,
+    "hasUsername": false,
+    "isPremium": false,
+    "error": "Account not registered (Simulated)"
+  },
+  "verifiedAt": "2026-09-17T16:07:11Z"
+}
