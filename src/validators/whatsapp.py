@@ -26,10 +26,15 @@ class WhatsAppValidator:
         self.api_token = api_token or os.getenv("WHATSAPP_API_TOKEN")
         self.phone_number_id = phone_number_id or os.getenv("WHATSAPP_PHONE_NUMBER_ID")
         self.rate_limiter = rate_limiter or AsyncRateLimiter(requests_per_second=5.0, max_concurrency=5)
-        self.simulation_mode = simulation_mode or not (self.api_token and self.phone_number_id)
         self.proxy_url = proxy_url
         self.base_url = "https://graph.facebook.com/v20.0"
         self.use_playwright = use_playwright if use_playwright is not None else not bool(self.api_token)
+        # When using Playwright, simulation_mode is purely controlled by the user/caller
+        if self.use_playwright:
+            self.simulation_mode = simulation_mode
+        else:
+            self.simulation_mode = simulation_mode or not (self.api_token and self.phone_number_id)
+
         self._playwright_validator = None
         if self.use_playwright:
             try:

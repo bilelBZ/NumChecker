@@ -578,20 +578,20 @@ class NumberCheckerApp(ctk.CTk):
         self.settings["simulation_mode"] = not is_live
 
         if is_live and "whatsapp" in platforms and not is_whatsapp_linked() and not self.settings["whatsapp_token"]:
-            res = messagebox.askyesnocancel(
-                "WhatsApp Not Linked",
+            res = messagebox.askyesno(
+                "WhatsApp QR Scan Required",
                 "You are running in Live Mode, but WhatsApp Web is not linked yet!\n\n"
-                "• Click 'Yes' to scan the QR code and link your WhatsApp now (100% Free).\n"
-                "• Click 'No' to run in Demo / Simulation Mode.\n"
-                "• Click 'Cancel' to abort."
+                "To verify real phone numbers on WhatsApp for free, you must link your account:\n\n"
+                "• Click 'Yes' to launch the QR scanner now.\n"
+                "• Click 'No' to switch to Offline Demo Mode."
             )
-            if res is True:
+            if res:
                 self._link_whatsapp()
-                return
-            elif res is False:
-                self.settings["simulation_mode"] = True
             else:
-                return
+                self.var_live_mode.set(False)
+                self.settings["simulation_mode"] = True
+                self._on_mode_toggled()
+            return
 
         # UI state
         self.is_running = True
@@ -744,15 +744,49 @@ class NumberCheckerApp(ctk.CTk):
         phone_display = latest_record.e164 or latest_record.input
         carrier_display = latest_record.carrier or "Invalid"
 
-        wa_text = "❌"
-        if latest_record.whatsapp and latest_record.whatsapp.isRegistered:
-            wa_text = "✅ Business" if latest_record.whatsapp.accountType == "business" else "✅ Active"
+        wa_text = "❌ Not on WA"
+        if latest_record.whatsapp:
+            if latest_record.whatsapp.isRegistered:
+                wa_text = "✅ Business" if latest_record.whatsapp.accountType == "business" else "✅ Active"
+            elif latest_record.whatsapp.error:
+                err = latest_record.whatsapp.error.lower()
+                if "not linked" in err:
+                    wa_text = "⚠️ Scan QR"
+                elif "simulated" in err:
+                    wa_text = "🧪 Demo No"
+                elif "not registered" in err or "unregistered" in err:
+                    wa_text = "❌ Not on WA"
+                else:
+                    wa_text = "❌ Inactive"
+            else:
+                wa_text = "❌ Not on WA"
 
-        tg_text = "❌"
-        if latest_record.telegram and latest_record.telegram.isRegistered:
-            tg_text = "⭐ Premium" if latest_record.telegram.isPremium else "✅ Active"
+        tg_text = "❌ Not on TG"
+        if latest_record.telegram:
+            if latest_record.telegram.isRegistered:
+                tg_text = "⭐ Premium" if latest_record.telegram.isPremium else "✅ Active"
+            elif latest_record.telegram.error:
+                err = latest_record.telegram.error.lower()
+                if "not configured" in err:
+                    tg_text = "⚠️ Needs Key"
+                elif "simulated" in err:
+                    tg_text = "🧪 Demo No"
+                else:
+                    tg_text = "❌ Not on TG"
+            else:
+                tg_text = "❌ Not on TG"
 
-        biz_hours_text = "☀️ Yes" if latest_record.isBusinessHours else "🌙 No"
+        # Explicit business hours description
+        if latest_record.isBusinessHours:
+            biz_hours_text = "☀️ Yes (Open)"
+        else:
+            now_utc = datetime.now(timezone.utc)
+            if now_utc.weekday() in (5, 6):
+                biz_hours_text = "🌙 Weekend (Closed)"
+            elif latest_record.localTime:
+                biz_hours_text = f"🌙 Night ({latest_record.localTime})"
+            else:
+                biz_hours_text = "🌙 Off-Hours"
 
         self.tree.insert(
             "",

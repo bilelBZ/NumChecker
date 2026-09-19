@@ -121,8 +121,11 @@ class PlaywrightWhatsAppValidator:
                 page = await self._ensure_browser()
 
                 if not self._is_authenticated:
-                    logger.warning("Unauthenticated WhatsApp session: falling back to safe simulation.")
-                    return self._simulate(e164_number)
+                    logger.warning("Unauthenticated WhatsApp session.")
+                    return WhatsAppResult(
+                        isRegistered=False,
+                        error="WhatsApp not linked. Click 'Link WhatsApp (Scan QR)' first."
+                    )
 
                 cleaned_num = e164_number.lstrip("+")
                 url = f"https://web.whatsapp.com/send?phone={cleaned_num}"

@@ -74,7 +74,15 @@ class TelegramValidator:
         if not e164_numbers:
             return {}
 
-        if self.simulation_mode or not self.session_string:
+        if not (self.api_id and self.api_hash and self.session_string):
+            if not self.simulation_mode:
+                return {
+                    num: TelegramResult(
+                        isRegistered=False,
+                        error="Telegram keys not configured (Enter API ID in Settings)"
+                    )
+                    for num in e164_numbers
+                }
             return self._simulate_verification(e164_numbers)
 
         async with self.rate_limiter:

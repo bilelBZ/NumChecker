@@ -20,21 +20,35 @@ def get_whatsapp_session_dir() -> str:
 
 
 def is_whatsapp_linked() -> bool:
-    """Check if WhatsApp Web session appears to be established."""
+    """Check if WhatsApp Web session is genuinely authenticated."""
     s_dir = get_whatsapp_session_dir()
     if not os.path.exists(s_dir):
         return False
-    # Check for Chrome/Chromium user profile markers
-    default_dir = os.path.join(s_dir, "Default")
-    return os.path.exists(default_dir) and len(os.listdir(default_dir)) > 3
+    # Check for verified active marker
+    marker = os.path.join(s_dir, "session_active.marker")
+    if os.path.exists(marker):
+        return True
+    # Check for actual WhatsApp IndexedDB encryption keys / database
+    idb_dir = os.path.join(s_dir, "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
+    if os.path.exists(idb_dir):
+        try:
+            ldb_files = [f for f in os.listdir(idb_dir) if f.endswith(".ldb") or f.endswith(".log")]
+            if ldb_files:
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def unlink_whatsapp_session() -> bool:
-    """Remove stored WhatsApp session files."""
+    """Remove stored WhatsApp session files and markers."""
     s_dir = get_whatsapp_session_dir()
     if os.path.exists(s_dir):
         try:
-            shutil.rmtree(s_dir)
+            marker = os.path.join(s_dir, "session_active.marker")
+            if os.path.exists(marker):
+                os.remove(marker)
+            shutil.rmtree(s_dir, ignore_errors=True)
             return True
         except Exception as e:
             logger.error(f"Failed to delete WhatsApp session directory: {e}")
@@ -62,9 +76,9 @@ async def authenticate_whatsapp_interactive(status_callback: Optional[Callable[[
                 r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
                 r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
             ]
-            if any(os.path.exists(p) for p in chrome_paths):
+            if any(os.path.exists(path) for path in chrome_paths):
                 browser_channel = "chrome"
-            elif any(os.path.exists(p) for p in edge_paths):
+            elif any(os.path.exists(path) for path in edge_paths):
                 browser_channel = "msedge"
 
         launch_kwargs = {
@@ -83,7 +97,6 @@ async def authenticate_whatsapp_interactive(status_callback: Optional[Callable[[
         try:
             browser_context = await p.chromium.launch_persistent_context(**launch_kwargs)
         except Exception as e:
-            # Fallback without specific channel
             if "channel" in launch_kwargs:
                 launch_kwargs.pop("channel")
                 browser_context = await p.chromium.launch_persistent_context(**launch_kwargs)
@@ -97,15 +110,24 @@ async def authenticate_whatsapp_interactive(status_callback: Optional[Callable[[
             await page.goto("https://web.whatsapp.com", wait_until="domcontentloaded")
 
             if status_callback:
-                status_callback("Scan QR code using WhatsApp on your phone (Linked Devices).")
+                status_callback("Scan QR code on your phone: WhatsApp > Linked Devices > Link a Device")
 
-            # Wait until chat list loads (indicating successful login)
+            # Wait until chat list loads (indicating successful QR login)
+            chat_selector = "#pane-side, div[data-testid='chat-list'], div[aria-label='Chat list'], div[data-testid='intro-title']"
             await page.wait_for_selector(
-                "#pane-side, div[data-testid='chat-list']",
+                chat_selector,
                 timeout=180000  # 3 minutes for QR scan
             )
+            # Create session marker on successful login
+            marker_file = os.path.join(session_dir, "session_active.marker")
+            try:
+                with open(marker_file, "w") as f:
+                    f.write("authenticated")
+            except Exception:
+                pass
+
             if status_callback:
-                status_callback("WhatsApp Web successfully authenticated!")
+                status_callback("WhatsApp Web successfully authenticated! Session saved.")
             await asyncio.sleep(2)  # Give browser 2s to flush session state
             return True
         except Exception as e:
